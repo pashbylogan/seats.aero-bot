@@ -5,13 +5,61 @@ This module maps major credit card rewards programs to their airline and hotel
 transfer partners, along with the corresponding seats.aero source identifiers.
 """
 
-from typing import Dict, List
+from enum import Enum
 
-# Mapping of credit card programs to their transfer partners
-# Format: "credit_card_name": ["seats_aero_source1", "seats_aero_source2", ...]
 
-CREDIT_CARD_PARTNERS: Dict[str, Dict[str, List[str]]] = {
-    "capital-one": {
+class CreditCard(Enum):
+    """Supported credit card programs."""
+    CAPITAL_ONE = "capital-one"
+    CHASE = "chase"
+    AMEX = "amex"
+    CITI = "citi"
+    BILT = "bilt"
+
+    @property
+    def display_name(self) -> str:
+        """Get the friendly display name for this credit card."""
+        return _CREDIT_CARD_INFO[self]["name"]
+
+    @property
+    def airline_partners(self) -> list[str]:
+        """Get the list of airline transfer partners for this credit card."""
+        return _CREDIT_CARD_INFO[self]["airlines"]
+
+
+class AirlineSource(Enum):
+    """Common airline loyalty program source identifiers for seats.aero."""
+    AA = "aa"
+    AEROPLAN = "aeroplan"
+    AEROMEXICO = "aeromexico"
+    ALASKA = "alaska"
+    ANA = "ana"
+    ASIA_MILES = "asia-miles"
+    DELTA = "delta"
+    ETIHAD = "etihad"
+    EXECUTIVE_CLUB = "executive-club"
+    FINNAIR = "finnair"
+    FLYING_BLUE = "flying-blue"
+    HAWAIIAN = "hawaiian"
+    JETBLUE = "jetblue"
+    KRISFLYER = "krisflyer"
+    PRIVILEGE_CLUB = "privilege-club"
+    QANTAS = "qantas"
+    SKYWARDS = "skywards"
+    SOUTHWEST = "southwest"
+    TURKISH = "turkish"
+    UNITED = "united"
+    VIRGIN_ATLANTIC = "virgin-atlantic"
+
+    @property
+    def display_name(self) -> str:
+        """Get the friendly airline name."""
+        return _SOURCE_TO_AIRLINE.get(self.value, self.value)
+
+
+# Internal mapping of credit card programs to their transfer partners
+_CREDIT_CARD_INFO: dict[CreditCard, dict[str, str | list[str]]] = {
+    CreditCard.CAPITAL_ONE: {
         "name": "Capital One (Venture, VentureX, Spark Miles)",
         "airlines": [
             "aeroplan",          # Air Canada Aeroplan (1:1)
@@ -29,10 +77,8 @@ CREDIT_CARD_PARTNERS: Dict[str, Dict[str, List[str]]] = {
             # Note: Capital One also has EVA Air, Japan Airlines, JetBlue, TAP, etc.
             # but not all may be available in seats.aero
         ],
-        "hotels": [],  # seats.aero focuses on flights
     },
-
-    "chase": {
+    CreditCard.CHASE: {
         "name": "Chase Ultimate Rewards (Sapphire, Freedom, Ink)",
         "airlines": [
             "aeroplan",          # Air Canada Aeroplan (1:1)
@@ -45,10 +91,8 @@ CREDIT_CARD_PARTNERS: Dict[str, Dict[str, List[str]]] = {
             "virgin-atlantic",   # Virgin Atlantic Flying Club (1:1)
             # Also: Iberia Plus, but may not be in seats.aero
         ],
-        "hotels": [],
     },
-
-    "amex": {
+    CreditCard.AMEX: {
         "name": "American Express Membership Rewards",
         "airlines": [
             "aeroplan",          # Air Canada Aeroplan (1:1)
@@ -67,10 +111,8 @@ CREDIT_CARD_PARTNERS: Dict[str, Dict[str, List[str]]] = {
             "virgin-atlantic",   # Virgin Atlantic Flying Club (1:1)
             # Also: British Airways, Iberia, Avianca, etc.
         ],
-        "hotels": [],
     },
-
-    "citi": {
+    CreditCard.CITI: {
         "name": "Citi ThankYou Rewards (Premier, Prestige, Rewards+)",
         "airlines": [
             "aa",                # American Airlines AAdvantage (1:1)
@@ -85,10 +127,8 @@ CREDIT_CARD_PARTNERS: Dict[str, Dict[str, List[str]]] = {
             "virgin-atlantic",   # Virgin Atlantic Flying Club (1:1)
             # Also: Avianca LifeMiles, EVA Air, etc.
         ],
-        "hotels": [],
     },
-
-    "bilt": {
+    CreditCard.BILT: {
         "name": "Bilt Rewards",
         "airlines": [
             "aa",                # American Airlines AAdvantage (1:1)
@@ -102,12 +142,11 @@ CREDIT_CARD_PARTNERS: Dict[str, Dict[str, List[str]]] = {
             "united",            # United MileagePlus (1:1)
             "virgin-atlantic",   # Virgin Atlantic Flying Club (1:1)
         ],
-        "hotels": [],
     },
 }
 
 # Reverse mapping: seats.aero source to friendly airline name
-SOURCE_TO_AIRLINE: Dict[str, str] = {
+_SOURCE_TO_AIRLINE: dict[str, str] = {
     "aa": "American Airlines AAdvantage",
     "aeroplan": "Air Canada Aeroplan",
     "aeromexico": "Aeromexico Club Premier",
@@ -132,7 +171,7 @@ SOURCE_TO_AIRLINE: Dict[str, str] = {
 }
 
 
-def get_transfer_partners(credit_card: str) -> List[str]:
+def get_transfer_partners(credit_card: str) -> list[str]:
     """
     Get the list of airline transfer partners for a given credit card.
 
@@ -145,31 +184,33 @@ def get_transfer_partners(credit_card: str) -> List[str]:
     Raises:
         ValueError: If credit card is not recognized
     """
-    credit_card_lower = credit_card.lower()
-
-    if credit_card_lower not in CREDIT_CARD_PARTNERS:
-        available = ", ".join(CREDIT_CARD_PARTNERS.keys())
+    # Try to match by enum value
+    try:
+        card = CreditCard(credit_card.lower())
+        return card.airline_partners
+    except ValueError:
+        available = ", ".join(card.value for card in CreditCard)
         raise ValueError(
             f"Unknown credit card: '{credit_card}'. "
             f"Available options: {available}"
-        )
-
-    return CREDIT_CARD_PARTNERS[credit_card_lower]["airlines"]
+        ) from None
 
 
 def get_credit_card_name(credit_card: str) -> str:
     """Get the friendly name for a credit card program."""
-    credit_card_lower = credit_card.lower()
-    if credit_card_lower in CREDIT_CARD_PARTNERS:
-        return CREDIT_CARD_PARTNERS[credit_card_lower]["name"]
-    return credit_card
+    try:
+        card = CreditCard(credit_card.lower())
+        return card.display_name
+    except ValueError:
+        return credit_card
 
 
-def list_all_credit_cards() -> List[str]:
+def list_all_credit_cards() -> list[str]:
     """Get a list of all supported credit card identifiers."""
-    return list(CREDIT_CARD_PARTNERS.keys())
+    return [card.value for card in CreditCard]
 
 
 def get_airline_name(source: str) -> str:
     """Get the friendly airline name for a seats.aero source."""
-    return SOURCE_TO_AIRLINE.get(source, source)
+    return _SOURCE_TO_AIRLINE.get(source, source)
+

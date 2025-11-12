@@ -9,7 +9,7 @@ Searches for one-way flights based on configuration in a YAML file.
 import argparse
 import sys
 from datetime import datetime
-from typing import List, Dict, Optional, Any
+from typing import Any
 import yaml
 import requests
 from tabulate import tabulate
@@ -43,8 +43,8 @@ class SeatsAeroClient:
         cabin: str,
         start_date: str,
         end_date: str,
-        sources: Optional[List[str]] = None
-    ) -> Dict[str, Any]:
+        sources: list[str] | None = None
+    ) -> dict[str, Any]:
         """
         Search for award flights.
 
@@ -86,7 +86,7 @@ class SeatsAeroClient:
 class FlightResult:
     """Represents a single flight search result."""
 
-    def __init__(self, data: Dict[str, Any]):
+    def __init__(self, data: dict[str, Any]):
         """
         Initialize a flight result from API response data.
 
@@ -109,7 +109,7 @@ class FlightResult:
         self.arrives_at = data.get("ArrivesAt", "")
         self.segments = data.get("AvailabilitySegments", [])
 
-    def calculate_cpp(self, cash_price: Optional[float] = None) -> Optional[float]:
+    def calculate_cpp(self, cash_price: float | None = None) -> float | None:
         """
         Calculate cents per point (CPP).
 
@@ -159,7 +159,7 @@ class FlightResult:
         else:
             return f"{self.stops} stops"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for display."""
         return {
             "Program": self.source,
@@ -189,7 +189,7 @@ class FlightFinder:
         self.client = SeatsAeroClient(self.config["api_key"])
 
     @staticmethod
-    def load_config(config_path: str) -> Dict[str, Any]:
+    def load_config(config_path: str) -> dict[str, Any]:
         """
         Load configuration from YAML file.
 
@@ -210,7 +210,7 @@ class FlightFinder:
             print(f"Error parsing YAML configuration: {e}", file=sys.stderr)
             sys.exit(1)
 
-    def search(self) -> List[FlightResult]:
+    def search(self) -> list[FlightResult]:
         """
         Perform flight search based on configuration.
 
@@ -277,7 +277,7 @@ class FlightFinder:
 
         return results
 
-    def filter_results(self, results: List[FlightResult]) -> List[FlightResult]:
+    def filter_results(self, results: list[FlightResult]) -> list[FlightResult]:
         """
         Filter results based on configuration.
 
@@ -296,7 +296,7 @@ class FlightFinder:
 
         return filtered
 
-    def sort_results(self, results: List[FlightResult]) -> List[FlightResult]:
+    def sort_results(self, results: list[FlightResult]) -> list[FlightResult]:
         """
         Sort results based on configuration.
 
@@ -328,7 +328,7 @@ class FlightFinder:
         else:
             return results
 
-    def display_results(self, results: List[FlightResult]):
+    def display_results(self, results: list[FlightResult]):
         """
         Display search results.
 
