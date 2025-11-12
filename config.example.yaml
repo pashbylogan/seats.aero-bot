@@ -1,0 +1,69 @@
+# Seats.aero Flight Finder Configuration
+
+# Your seats.aero API key (get from https://seats.aero/apikey)
+# You need a Pro subscription ($9.99/month) to access the API
+api_key: "your_api_key_here"
+
+# Search parameters
+search:
+  # Origin airport code(s) - can be comma-separated for multiple airports
+  # Example: "JFK" or "JFK,EWR,LGA" for all NYC airports
+  origin: "SFO"
+
+  # Destination airport code(s) - can be comma-separated
+  # Example: "NRT" or "NRT,HND" for Tokyo airports
+  destination: "LAX"
+
+  # Cabin class: economy, business, or first
+  cabin: "economy"
+
+  # Date range for search
+  # Use ISO format: YYYY-MM-DD
+  start_date: "2025-12-01"
+  end_date: "2025-12-15"
+
+  # Number of results to display (default: 10)
+  max_results: 10
+
+  # Filter by specific mileage programs (optional)
+  # Leave empty or comment out to search all programs
+  # Available sources include:
+  #   - aeroplan (Air Canada)
+  #   - flying-blue (Air France/KLM)
+  #   - alaska (Alaska Airlines)
+  #   - aa (American Airlines)
+  #   - delta (Delta SkyMiles)
+  #   - united (United MileagePlus)
+  #   - krisflyer (Singapore Airlines)
+  #   - velocity (Virgin Australia)
+  #   - virgin-atlantic (Virgin Atlantic)
+  #   And many more...
+  sources: []
+  # Example for Capital One transfer partners:
+  # sources:
+  #   - aeroplan
+  #   - flying-blue
+  #   - krisflyer
+  #   - velocity
+
+# Points valuation settings
+# Used to calculate cents per point (CPP)
+valuation:
+  # If you want to calculate CPP, you can either:
+  # 1. Provide a baseline cash price per flight (in USD)
+  baseline_cash_price: null
+
+  # 2. Or provide a CPP threshold - only show flights above this value
+  # This helps filter for good deals
+  min_cpp: 0.01  # 1 cent per point minimum
+
+# Output settings
+output:
+  # Sort results by: "miles" (cheapest points), "cpp" (best value), "date" (earliest)
+  sort_by: "miles"
+
+  # Show full flight details including segments
+  show_segments: true
+
+  # Show only non-stop flights
+  nonstop_only: false
