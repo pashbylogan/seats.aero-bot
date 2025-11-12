@@ -4,7 +4,7 @@ A Python script to find the cheapest award flights using the seats.aero API. Sea
 
 ## Prerequisites
 
-- Python 3.8 or higher
+- Python 3.12 or higher
 - [uv](https://docs.astral.sh/uv/) (recommended) or pip
 - A seats.aero Pro subscription ($9.99/month)
 - Your seats.aero API key (get it from https://seats.aero/apikey)

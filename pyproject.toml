@@ -3,7 +3,7 @@ name = "seats-aero-bot"
 version = "0.1.0"
 description = "Find the cheapest award flights using the seats.aero API"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.12"
 dependencies = [
     "requests>=2.31.0",
     "pyyaml>=6.0.1",
