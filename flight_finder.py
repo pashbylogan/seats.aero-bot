@@ -32,7 +32,7 @@ class SeatsAeroClient:
         self.api_key = api_key
         self.session = requests.Session()
         self.session.headers.update({
-            "Partner-Authorization": f"Bearer {self.api_key}",
+            "Partner-Authorization": self.api_key,
             "Accept": "application/json"
         })
 
