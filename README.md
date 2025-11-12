@@ -4,7 +4,8 @@ A Python script to find the cheapest award flights using the seats.aero API. Sea
 
 ## Prerequisites
 
-- Python 3.7 or higher
+- Python 3.8 or higher
+- [uv](https://docs.astral.sh/uv/) (recommended) or pip
 - A seats.aero Pro subscription ($9.99/month)
 - Your seats.aero API key (get it from https://seats.aero/apikey)
 
@@ -12,9 +13,14 @@ A Python script to find the cheapest award flights using the seats.aero API. Sea
 
 1. Clone or download this repository
 
-2. Install dependencies:
+2. Install dependencies using uv (recommended):
 ```bash
-pip install -r requirements.txt
+uv sync
+```
+
+Or using pip:
+```bash
+pip install -e .
 ```
 
 3. Copy the example configuration and add your API key:
@@ -70,12 +76,17 @@ You can filter by specific loyalty programs that work with your points. Common s
 
 Run the script with default configuration:
 ```bash
+uv run python flight_finder.py
+```
+
+Or if installed with pip:
+```bash
 python flight_finder.py
 ```
 
-Or specify a custom configuration file:
+Specify a custom configuration file:
 ```bash
-python flight_finder.py -c my_search.yaml
+uv run python flight_finder.py -c my_search.yaml
 ```
 
 ## Understanding Cents Per Point (CPP)
