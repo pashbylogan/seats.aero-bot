@@ -1,0 +1,84 @@
+# Seats.aero Flight Finder Configuration
+
+# Your seats.aero API key (get from https://seats.aero/apikey)
+# You need a Pro subscription ($9.99/month) to access the API
+api_key: "your_api_key_here"
+
+# Search parameters
+search:
+  # Origin airport code(s) - can be comma-separated for multiple airports
+  # Example: "JFK" or "JFK,EWR,LGA" for all NYC airports
+  origin: "SFO"
+
+  # Destination airport code(s) - can be comma-separated
+  # Example: "NRT" or "NRT,HND" for Tokyo airports
+  destination: "LAX"
+
+  # Cabin class: economy, business, or first
+  cabin: "economy"
+
+  # Date range for search
+  # Use ISO format: YYYY-MM-DD
+  start_date: "2025-12-01"
+  end_date: "2025-12-15"
+
+  # Number of results to display (default: 10)
+  max_results: 10
+
+  # OPTION 1 (Recommended): Specify your credit card to automatically search all transfer partners
+  # Supported cards: capital-one, chase, amex, citi, bilt
+  # This will automatically search all airline loyalty programs you can transfer to
+  credit_card: "capital-one"
+
+  # OPTION 2: Manually filter by specific mileage programs
+  # Leave empty or comment out to search all programs
+  # NOTE: If credit_card is specified above, sources will be ignored
+  # Available sources include:
+  #   - aeroplan (Air Canada)
+  #   - flying-blue (Air France/KLM)
+  #   - alaska (Alaska Airlines)
+  #   - aa (American Airlines)
+  #   - delta (Delta SkyMiles)
+  #   - united (United MileagePlus)
+  #   - krisflyer (Singapore Airlines)
+  #   - velocity (Virgin Australia)
+  #   - virgin-atlantic (Virgin Atlantic)
+  #   And many more...
+  sources: []
+  # Example manual selection:
+  # sources:
+  #   - aeroplan
+  #   - flying-blue
+  #   - krisflyer
+
+# Points valuation settings
+# Used to calculate cents per point (CPP)
+valuation:
+  # Provide a baseline cash price per flight (in USD) to calculate CPP
+  # CPP = (Cash Price - Taxes) / Miles × 100
+  #
+  # NOTE: Currently this must be manually set. In the future, this could be
+  # automated by integrating with flight price APIs, but most require partner
+  # approval or paid subscriptions.
+  #
+  # To find cash prices, check:
+  #   - Google Flights: https://www.google.com/travel/flights
+  #   - Kayak: https://www.kayak.com/flights
+  #   - ITA Matrix: https://matrix.itasoftware.com/
+  baseline_cash_price: null
+  # Example: baseline_cash_price: 350.00
+
+  # Optional: CPP threshold - only show flights above this value
+  # This helps filter for good deals
+  min_cpp: 0.01  # 1 cent per point minimum
+
+# Output settings
+output:
+  # Sort results by: "miles" (cheapest points), "cpp" (best value), "date" (earliest)
+  sort_by: "miles"
+
+  # Show full flight details including segments
+  show_segments: true
+
+  # Show only non-stop flights
+  nonstop_only: false
