@@ -46,31 +46,70 @@ Edit `config.yaml` to customize your search:
 ### Optional Settings
 
 - **max_results**: Number of results to display (default: 10)
-- **sources**: Filter by specific mileage programs (leave empty for all)
+- **credit_card**: Automatically search all transfer partners for your card
+- **sources**: Manually filter by specific mileage programs (leave empty for all)
 - **baseline_cash_price**: Cash price in USD for CPP calculation
 - **min_cpp**: Minimum cents per point threshold
 - **sort_by**: Sort results by "miles", "cpp", or "date"
 - **show_segments**: Show detailed flight segments
 - **nonstop_only**: Show only nonstop flights
 
-### Mileage Program Sources
+### Credit Card Integration (New!)
 
-You can filter by specific loyalty programs that work with your points. Common sources include:
+Instead of manually specifying loyalty programs, simply specify your credit card and the script will automatically search all its transfer partners:
 
-**Capital One Transfer Partners:**
-- `aeroplan` - Air Canada Aeroplan
-- `flying-blue` - Air France/KLM Flying Blue
-- `krisflyer` - Singapore Airlines KrisFlyer
-- `velocity` - Virgin Australia Velocity
-- `turkish` - Turkish Airlines Miles & Smiles
-- `etihad` - Etihad Guest
+**Supported Credit Cards:**
+- `capital-one` - Capital One Venture, VentureX, Spark Miles (18 airline partners)
+- `chase` - Chase Sapphire, Freedom, Ink (9+ airline partners)
+- `amex` - American Express Membership Rewards (14+ airline partners)
+- `citi` - Citi Premier, Prestige, Rewards+ (10+ airline partners)
+- `bilt` - Bilt Rewards (10 airline partners)
 
-**Other Popular Programs:**
-- `alaska` - Alaska Airlines Mileage Plan
+**Example config:**
+```yaml
+search:
+  credit_card: "capital-one"
+```
+
+This automatically searches:
+- Air Canada Aeroplan
+- Air France-KLM Flying Blue
+- British Airways Executive Club
+- Cathay Pacific Asia Miles
+- Emirates Skywards
+- Etihad Guest
+- Finnair Plus
+- Qantas Frequent Flyer
+- Qatar Airways Privilege Club
+- Singapore KrisFlyer
+- Turkish Airlines Miles & Smiles
+- And more!
+
+### Manual Program Selection
+
+You can also manually filter by specific loyalty programs if you prefer:
+
+```yaml
+search:
+  sources:
+    - aeroplan
+    - flying-blue
+    - krisflyer
+```
+
+**Available Program Codes:**
 - `aa` - American Airlines AAdvantage
+- `aeroplan` - Air Canada Aeroplan
+- `alaska` - Alaska Airlines Mileage Plan
 - `delta` - Delta SkyMiles
+- `etihad` - Etihad Guest
+- `flying-blue` - Air France-KLM Flying Blue
+- `krisflyer` - Singapore Airlines KrisFlyer
+- `qantas` - Qantas Frequent Flyer
+- `turkish` - Turkish Airlines Miles & Smiles
 - `united` - United MileagePlus
 - `virgin-atlantic` - Virgin Atlantic Flying Club
+- And many more...
 
 ## Usage
 
@@ -108,7 +147,15 @@ CPP = (Cash Price - Taxes) / Miles × 100
 - Economy flights: aim for 1-1.5 CPP
 - Business/First class: aim for 2+ CPP
 
-To calculate CPP, set `baseline_cash_price` in your config to the approximate cash price of your route.
+### How to Find Cash Prices
+
+Currently, you need to manually check cash prices and set `baseline_cash_price` in your config. Recommended tools:
+
+- **Google Flights**: https://www.google.com/travel/flights - Best for quick price checks
+- **Kayak**: https://www.kayak.com/flights - Good for price comparisons
+- **ITA Matrix**: https://matrix.itasoftware.com/ - Detailed fare analysis
+
+> **Note**: Automatic price fetching requires flight price APIs which typically need partner approval or paid subscriptions. If you have access to a flight price API, you could integrate it to automate CPP calculation.
 
 ## Example Output
 

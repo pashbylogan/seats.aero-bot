@@ -13,6 +13,7 @@ from typing import List, Dict, Optional, Any
 import yaml
 import requests
 from tabulate import tabulate
+from credit_cards import get_transfer_partners, get_credit_card_name, list_all_credit_cards
 
 
 class SeatsAeroClient:
@@ -218,13 +219,39 @@ class FlightFinder:
         """
         search_config = self.config["search"]
 
-        print(f"Searching for flights...")
-        print(f"  Route: {search_config['origin']} → {search_config['destination']}")
-        print(f"  Dates: {search_config['start_date']} to {search_config['end_date']}")
-        print(f"  Cabin: {search_config['cabin']}")
-
-        if search_config.get("sources"):
-            print(f"  Programs: {', '.join(search_config['sources'])}")
+        # Determine which sources to search
+        sources = None
+        if search_config.get("credit_card"):
+            # Use credit card transfer partners
+            credit_card = search_config["credit_card"]
+            try:
+                sources = get_transfer_partners(credit_card)
+                credit_card_name = get_credit_card_name(credit_card)
+                print(f"Searching for flights...")
+                print(f"  Route: {search_config['origin']} → {search_config['destination']}")
+                print(f"  Dates: {search_config['start_date']} to {search_config['end_date']}")
+                print(f"  Cabin: {search_config['cabin']}")
+                print(f"  Credit Card: {credit_card_name}")
+                print(f"  Transfer Partners: {len(sources)} programs")
+            except ValueError as e:
+                print(f"Error: {e}", file=sys.stderr)
+                print(f"Available credit cards: {', '.join(list_all_credit_cards())}", file=sys.stderr)
+                sys.exit(1)
+        elif search_config.get("sources"):
+            # Use manually specified sources
+            sources = search_config["sources"]
+            print(f"Searching for flights...")
+            print(f"  Route: {search_config['origin']} → {search_config['destination']}")
+            print(f"  Dates: {search_config['start_date']} to {search_config['end_date']}")
+            print(f"  Cabin: {search_config['cabin']}")
+            print(f"  Programs: {', '.join(sources)}")
+        else:
+            # Search all programs
+            print(f"Searching for flights...")
+            print(f"  Route: {search_config['origin']} → {search_config['destination']}")
+            print(f"  Dates: {search_config['start_date']} to {search_config['end_date']}")
+            print(f"  Cabin: {search_config['cabin']}")
+            print(f"  Programs: All available")
 
         print()
 
@@ -234,7 +261,7 @@ class FlightFinder:
             cabin=search_config["cabin"],
             start_date=search_config["start_date"],
             end_date=search_config["end_date"],
-            sources=search_config.get("sources")
+            sources=sources
         )
 
         # Parse results
