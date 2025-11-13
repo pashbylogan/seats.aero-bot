@@ -10,11 +10,14 @@ from enum import Enum
 
 class CreditCard(Enum):
     """Supported credit card programs."""
+
     CAPITAL_ONE = "capital-one"
     CHASE = "chase"
     AMEX = "amex"
     CITI = "citi"
     BILT = "bilt"
+    WELLS_FARGO = "wells-fargo"
+    ROVE = "rove"
 
     @property
     def display_name(self) -> str:
@@ -30,7 +33,8 @@ class CreditCard(Enum):
 
 class AirlineSource(Enum):
     """Common airline loyalty program source identifiers for seats.aero."""
-    AA = "aa"
+
+    AA = "american"
     AEROPLAN = "aeroplan"
     AEROMEXICO = "aeromexico"
     ALASKA = "alaska"
@@ -40,17 +44,19 @@ class AirlineSource(Enum):
     ETIHAD = "etihad"
     EXECUTIVE_CLUB = "executive-club"
     FINNAIR = "finnair"
-    FLYING_BLUE = "flying-blue"
+    FLYING_BLUE = "flyingblue"
     HAWAIIAN = "hawaiian"
     JETBLUE = "jetblue"
-    KRISFLYER = "krisflyer"
-    PRIVILEGE_CLUB = "privilege-club"
+    KRISFLYER = "singapore"
+    LUFTHANSA = "lufthansa"
+    PRIVILEGE_CLUB = "qatar"
     QANTAS = "qantas"
-    SKYWARDS = "skywards"
+    SKYWARDS = "emirates"
     SOUTHWEST = "southwest"
     TURKISH = "turkish"
     UNITED = "united"
-    VIRGIN_ATLANTIC = "virgin-atlantic"
+    VIRGIN_ATLANTIC = "virginatlantic"
+    VIRGIN_AUSTRALIA = "velocity"
 
     @property
     def display_name(self) -> str:
@@ -63,85 +69,92 @@ _CREDIT_CARD_INFO: dict[CreditCard, dict[str, str | list[AirlineSource]]] = {
     CreditCard.CAPITAL_ONE: {
         "name": "Capital One (Venture, VentureX, Spark Miles)",
         "airlines": [
-            AirlineSource.AEROPLAN,          # Air Canada Aeroplan (1:1)
-            # "lifemiles",                   # Avianca LifeMiles (1:1) - Note: seats.aero no longer supports LifeMiles
-            AirlineSource.EXECUTIVE_CLUB,    # British Airways Executive Club (1:1)
-            AirlineSource.ASIA_MILES,        # Cathay Pacific Asia Miles (1:1)
-            AirlineSource.SKYWARDS,          # Emirates Skywards (1:1)
-            AirlineSource.ETIHAD,            # Etihad Guest (1:1)
-            AirlineSource.FINNAIR,           # Finnair Plus (1:1)
-            AirlineSource.FLYING_BLUE,       # Air France-KLM Flying Blue (1:1)
-            AirlineSource.QANTAS,            # Qantas Frequent Flyer (1:1)
-            AirlineSource.PRIVILEGE_CLUB,    # Qatar Airways Privilege Club (1:1)
-            AirlineSource.KRISFLYER,         # Singapore Airlines KrisFlyer (1:1)
-            AirlineSource.TURKISH,           # Turkish Airlines Miles&Smiles (1:1)
-            # Note: Capital One also has EVA Air, Japan Airlines, JetBlue, TAP, etc.
-            # but not all may be available in seats.aero
+            AirlineSource.AEROMEXICO,  # Aeromexico Club Premier
+            AirlineSource.AEROPLAN,  # Air Canada Aeroplan
+            AirlineSource.FLYING_BLUE,  # Air France-KLM Flying Blue
+            AirlineSource.SKYWARDS,  # Emirates Skywards
+            AirlineSource.ETIHAD,  # Etihad Guest
+            AirlineSource.FINNAIR,  # Finnair Plus
+            AirlineSource.JETBLUE,  # JetBlue TrueBlue
+            AirlineSource.QANTAS,  # Qantas Frequent Flyer
+            AirlineSource.PRIVILEGE_CLUB,  # Qatar Airways Privilege Club
+            AirlineSource.KRISFLYER,  # Singapore Airlines KrisFlyer
+            AirlineSource.TURKISH,  # Turkish Airlines Miles&Smiles
+            AirlineSource.VIRGIN_ATLANTIC,  # Virgin Atlantic Flying Club
         ],
     },
     CreditCard.CHASE: {
         "name": "Chase Ultimate Rewards (Sapphire, Freedom, Ink)",
         "airlines": [
-            AirlineSource.AEROPLAN,          # Air Canada Aeroplan (1:1)
-            AirlineSource.EXECUTIVE_CLUB,    # British Airways Executive Club (1:1)
-            AirlineSource.FLYING_BLUE,       # Air France-KLM Flying Blue (1:1)
-            AirlineSource.KRISFLYER,         # Singapore Airlines KrisFlyer (1:1)
-            AirlineSource.UNITED,            # United MileagePlus (1:1)
-            AirlineSource.SOUTHWEST,         # Southwest Rapid Rewards (1:1)
-            AirlineSource.JETBLUE,           # JetBlue TrueBlue (1:1)
-            AirlineSource.VIRGIN_ATLANTIC,   # Virgin Atlantic Flying Club (1:1)
-            # Also: Iberia Plus, but may not be in seats.aero
+            AirlineSource.AEROPLAN,  # Air Canada Aeroplan
+            AirlineSource.FLYING_BLUE,  # Air France-KLM Flying Blue
+            AirlineSource.JETBLUE,  # JetBlue TrueBlue
+            AirlineSource.KRISFLYER,  # Singapore Airlines KrisFlyer
+            AirlineSource.UNITED,  # United MileagePlus
+            AirlineSource.VIRGIN_ATLANTIC,  # Virgin Atlantic Flying Club
         ],
     },
     CreditCard.AMEX: {
         "name": "American Express Membership Rewards",
         "airlines": [
-            AirlineSource.AEROPLAN,          # Air Canada Aeroplan (1:1)
-            AirlineSource.AEROMEXICO,        # Aeromexico Club Premier (1:1)
-            AirlineSource.ANA,               # ANA Mileage Club (1:1)
-            AirlineSource.ASIA_MILES,        # Cathay Pacific Asia Miles (1:1)
-            AirlineSource.DELTA,             # Delta SkyMiles (1:1)
-            AirlineSource.SKYWARDS,          # Emirates Skywards (1:1)
-            AirlineSource.ETIHAD,            # Etihad Guest (1:1)
-            AirlineSource.FINNAIR,           # Finnair Plus (1:1)
-            AirlineSource.FLYING_BLUE,       # Air France-KLM Flying Blue (1:1)
-            AirlineSource.HAWAIIAN,          # Hawaiian Airlines HawaiianMiles (1:1)
-            AirlineSource.JETBLUE,           # JetBlue TrueBlue (1:1)
-            AirlineSource.QANTAS,            # Qantas Frequent Flyer (1:1)
-            AirlineSource.KRISFLYER,         # Singapore Airlines KrisFlyer (1:1)
-            AirlineSource.VIRGIN_ATLANTIC,   # Virgin Atlantic Flying Club (1:1)
-            # Also: British Airways, Iberia, Avianca, etc.
+            AirlineSource.AEROMEXICO,  # Aeromexico Club Premier
+            AirlineSource.AEROPLAN,  # Air Canada Aeroplan
+            AirlineSource.FLYING_BLUE,  # Air France-KLM Flying Blue
+            AirlineSource.DELTA,  # Delta SkyMiles
+            AirlineSource.SKYWARDS,  # Emirates Skywards
+            AirlineSource.ETIHAD,  # Etihad Guest
+            AirlineSource.JETBLUE,  # JetBlue TrueBlue
+            AirlineSource.QANTAS,  # Qantas Frequent Flyer
+            AirlineSource.PRIVILEGE_CLUB,  # Qatar Airways Privilege Club
+            AirlineSource.KRISFLYER,  # Singapore Airlines KrisFlyer
+            AirlineSource.VIRGIN_ATLANTIC,  # Virgin Atlantic Flying Club
+            AirlineSource.VIRGIN_AUSTRALIA,  # Virgin Australia Velocity
         ],
     },
     CreditCard.CITI: {
         "name": "Citi ThankYou Rewards (Premier, Prestige, Rewards+)",
         "airlines": [
-            AirlineSource.AA,                # American Airlines AAdvantage (1:1)
-            AirlineSource.AEROPLAN,          # Air Canada Aeroplan (1:1)
-            AirlineSource.ASIA_MILES,        # Cathay Pacific Asia Miles (1:1)
-            AirlineSource.FLYING_BLUE,       # Air France-KLM Flying Blue (1:1)
-            AirlineSource.JETBLUE,           # JetBlue TrueBlue (1:1)
-            AirlineSource.QANTAS,            # Qantas Frequent Flyer (1:1)
-            AirlineSource.PRIVILEGE_CLUB,    # Qatar Airways Privilege Club (1:1)
-            AirlineSource.KRISFLYER,         # Singapore Airlines KrisFlyer (1:1)
-            AirlineSource.TURKISH,           # Turkish Airlines Miles&Smiles (1:1)
-            AirlineSource.VIRGIN_ATLANTIC,   # Virgin Atlantic Flying Club (1:1)
-            # Also: Avianca LifeMiles, EVA Air, etc.
+            AirlineSource.AEROMEXICO,  # Aeromexico Club Premier
+            AirlineSource.AA,  # American Airlines AAdvantage
+            AirlineSource.FLYING_BLUE,  # Air France-KLM Flying Blue
+            AirlineSource.SKYWARDS,  # Emirates Skywards
+            AirlineSource.ETIHAD,  # Etihad Guest
+            AirlineSource.JETBLUE,  # JetBlue TrueBlue
+            AirlineSource.PRIVILEGE_CLUB,  # Qatar Airways Privilege Club
+            AirlineSource.KRISFLYER,  # Singapore Airlines KrisFlyer
+            AirlineSource.TURKISH,  # Turkish Airlines Miles&Smiles
+            AirlineSource.VIRGIN_ATLANTIC,  # Virgin Atlantic Flying Club
         ],
     },
     CreditCard.BILT: {
         "name": "Bilt Rewards",
         "airlines": [
-            AirlineSource.AA,                # American Airlines AAdvantage (1:1)
-            AirlineSource.AEROPLAN,          # Air Canada Aeroplan (1:1)
-            AirlineSource.ALASKA,            # Alaska Airlines Mileage Plan (1:1)
-            AirlineSource.EXECUTIVE_CLUB,    # British Airways Executive Club (1:1)
-            AirlineSource.ASIA_MILES,        # Cathay Pacific Asia Miles (1:1)
-            AirlineSource.FLYING_BLUE,       # Air France-KLM Flying Blue (1:1)
-            AirlineSource.HAWAIIAN,          # Hawaiian Airlines HawaiianMiles (1:1)
-            AirlineSource.TURKISH,           # Turkish Airlines Miles&Smiles (1:1)
-            AirlineSource.UNITED,            # United MileagePlus (1:1)
-            AirlineSource.VIRGIN_ATLANTIC,   # Virgin Atlantic Flying Club (1:1)
+            AirlineSource.AEROPLAN,  # Air Canada Aeroplan
+            AirlineSource.FLYING_BLUE,  # Air France-KLM Flying Blue
+            AirlineSource.ALASKA,  # Alaska Atmos Rewards
+            AirlineSource.SKYWARDS,  # Emirates Skywards
+            AirlineSource.ETIHAD,  # Etihad Guest
+            AirlineSource.PRIVILEGE_CLUB,  # Qatar Airways Privilege Club
+            AirlineSource.TURKISH,  # Turkish Airlines Miles&Smiles
+            AirlineSource.UNITED,  # United MileagePlus
+            AirlineSource.VIRGIN_ATLANTIC,  # Virgin Atlantic Flying Club
+        ],
+    },
+    CreditCard.WELLS_FARGO: {
+        "name": "Wells Fargo Autograph",
+        "airlines": [
+            AirlineSource.FLYING_BLUE,  # Air France-KLM Flying Blue
+            AirlineSource.VIRGIN_ATLANTIC,  # Virgin Atlantic Flying Club
+        ],
+    },
+    CreditCard.ROVE: {
+        "name": "Rove",
+        "airlines": [
+            AirlineSource.AEROMEXICO,  # Aeromexico Club Premier
+            AirlineSource.ETIHAD,  # Etihad Guest
+            AirlineSource.FINNAIR,  # Finnair Plus
+            AirlineSource.LUFTHANSA,  # Lufthansa Miles & More
+            AirlineSource.PRIVILEGE_CLUB,  # Qatar Airways Privilege Club
         ],
     },
 }
@@ -162,6 +175,7 @@ _SOURCE_TO_AIRLINE: dict[AirlineSource, str] = {
     AirlineSource.HAWAIIAN: "Hawaiian Airlines HawaiianMiles",
     AirlineSource.JETBLUE: "JetBlue TrueBlue",
     AirlineSource.KRISFLYER: "Singapore Airlines KrisFlyer",
+    AirlineSource.LUFTHANSA: "Lufthansa Miles & More",
     AirlineSource.PRIVILEGE_CLUB: "Qatar Airways Privilege Club",
     AirlineSource.QANTAS: "Qantas Frequent Flyer",
     AirlineSource.SKYWARDS: "Emirates Skywards",
@@ -169,6 +183,7 @@ _SOURCE_TO_AIRLINE: dict[AirlineSource, str] = {
     AirlineSource.TURKISH: "Turkish Airlines Miles&Smiles",
     AirlineSource.UNITED: "United MileagePlus",
     AirlineSource.VIRGIN_ATLANTIC: "Virgin Atlantic Flying Club",
+    AirlineSource.VIRGIN_AUSTRALIA: "Virgin Australia Velocity",
 }
 
 
@@ -192,8 +207,7 @@ def get_transfer_partners(credit_card: str) -> list[str]:
     except ValueError:
         available = ", ".join(card.value for card in CreditCard)
         raise ValueError(
-            f"Unknown credit card: '{credit_card}'. "
-            f"Available options: {available}"
+            f"Unknown credit card: '{credit_card}'. Available options: {available}"
         ) from None
 
 
@@ -218,4 +232,3 @@ def get_airline_name(source: str) -> str:
         return _SOURCE_TO_AIRLINE.get(airline, source)
     except ValueError:
         return source
-

@@ -74,8 +74,8 @@ valuation:
 
 # Output settings
 output:
-  # Sort results by: "miles" (cheapest points), "cpp" (best value), "date" (earliest)
-  sort_by: "miles"
+  # Sort results by: "total_cost" (cheapest total), "miles" (cheapest points), "cpp" (best value), "date" (earliest)
+  sort_by: "total_cost"
 
   # Show full flight details including segments
   show_segments: true
